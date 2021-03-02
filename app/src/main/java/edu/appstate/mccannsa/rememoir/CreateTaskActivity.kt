@@ -1,44 +1,71 @@
 package edu.appstate.mccannsa.rememoir
 
+import android.app.DatePickerDialog
+import android.app.Dialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
+import android.widget.DatePicker
 import android.widget.EditText
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import edu.appstate.mccannsa.rememoir.ui.tasks.TasksFragment
+import java.text.SimpleDateFormat
+import java.util.*
 
 class CreateTaskActivity : AppCompatActivity() {
 
-    private lateinit var addTaskButton: Button
-    private lateinit var nameText: String
-    private lateinit var dateText: String
-    private lateinit var timeText: String
+    private lateinit var btnAddTask: Button
+    private lateinit var txtName: EditText
+    private lateinit var txtDate: TextView
+    private lateinit var txtTime: TextView
+    private lateinit var pickerDate: DatePickerFragment
     private val db = Firebase.firestore
     private val TAG = "CreateTaskActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_task)
 
-        addTaskButton = findViewById<Button>(R.id.buttonAddTask)
+        txtName = findViewById(R.id.text_taskName)
 
-        addTaskButton.setOnClickListener {
+        txtDate = findViewById(R.id.text_date)
+        txtDate.setOnClickListener {
+            showDatePicker()
+        }
 
-            nameText = findViewById<EditText>(R.id.editTextName).text.toString()
-            dateText = findViewById<EditText>(R.id.editTextDate).text.toString()
-            timeText = findViewById<EditText>(R.id.editTextTime).text.toString()
+        pickerDate = DatePickerFragment(txtDate)
 
-            val task = hashMapOf(
-                "name" to nameText,
-                "date" to dateText,
-                "time" to timeText,
+        txtTime = findViewById(R.id.text_time)
+        txtTime.setOnClickListener { showTimePicker() }
+
+        btnAddTask = findViewById(R.id.button_addTask)
+        btnAddTask.setOnClickListener { addTask() }
+    }
+
+    private fun addTask() {
+
+        val taskName = txtName.text.toString()
+        val dateFormat = SimpleDateFormat("MM-dd-yyyy HH:mm")
+        val dateText = "${pickerDate.pickMonth}-${pickerDate.pickDay}-${pickerDate.pickYear} 00:00"
+        val taskDateTime = Timestamp(dateFormat.parse(dateText)!!)
+
+        val task = hashMapOf(
+                "name" to taskName,
+                "dateTime" to taskDateTime,
                 "checked" to false
-            )
+        )
 
-            db.collection("tasks")
+        db.collection("tasks")
                 .add(task)
                 .addOnSuccessListener { documentReference ->
                     Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
@@ -47,8 +74,15 @@ class CreateTaskActivity : AppCompatActivity() {
                     Log.w(TAG, "Error adding document", e)
                 }
 
-            val showMain = Intent(this, TasksFragment::class.java)
-            startActivity(showMain)
-        }
+        val showMain = Intent(this, MainActivity::class.java)
+        startActivity(showMain)
+    }
+
+    private fun showDatePicker() {
+        pickerDate.show(supportFragmentManager, "datePicker")
+    }
+
+    private fun showTimePicker() {
+
     }
 }

@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import edu.appstate.mccannsa.rememoir.CreateTaskActivity
-import edu.appstate.mccannsa.rememoir.MainActivity
 import edu.appstate.mccannsa.rememoir.R
 
 class TasksFragment : Fragment() {
