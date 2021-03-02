@@ -28,6 +28,7 @@ class CreateTaskActivity : AppCompatActivity() {
     private lateinit var txtDate: TextView
     private lateinit var txtTime: TextView
     private lateinit var pickerDate: DatePickerFragment
+    private lateinit var pickerTime: TimePickerFragment
     private val db = Firebase.firestore
     private val TAG = "CreateTaskActivity"
 
@@ -39,14 +40,12 @@ class CreateTaskActivity : AppCompatActivity() {
         txtName = findViewById(R.id.text_taskName)
 
         txtDate = findViewById(R.id.text_date)
-        txtDate.setOnClickListener {
-            showDatePicker()
-        }
-
+        txtDate.setOnClickListener { showDatePicker() }
         pickerDate = DatePickerFragment(txtDate)
 
         txtTime = findViewById(R.id.text_time)
         txtTime.setOnClickListener { showTimePicker() }
+        pickerTime = TimePickerFragment(txtTime)
 
         btnAddTask = findViewById(R.id.button_addTask)
         btnAddTask.setOnClickListener { addTask() }
@@ -55,8 +54,8 @@ class CreateTaskActivity : AppCompatActivity() {
     private fun addTask() {
 
         val taskName = txtName.text.toString()
-        val dateFormat = SimpleDateFormat("MM-dd-yyyy HH:mm")
-        val dateText = "${pickerDate.pickMonth}-${pickerDate.pickDay}-${pickerDate.pickYear} 00:00"
+        val dateFormat = SimpleDateFormat("MM-dd-yyyy h:mm a")
+        val dateText = "${pickerDate.pickMonth}-${pickerDate.pickDay}-${pickerDate.pickYear} ${pickerTime.strTime}"
         val taskDateTime = Timestamp(dateFormat.parse(dateText)!!)
 
         val task = hashMapOf(
@@ -83,6 +82,6 @@ class CreateTaskActivity : AppCompatActivity() {
     }
 
     private fun showTimePicker() {
-
+        pickerTime.show(supportFragmentManager, "timePicker")
     }
 }

@@ -23,9 +23,9 @@ class DatePickerFragment(tv: TextView) : DialogFragment(), DatePickerDialog.OnDa
 
         // Get the current date as a default value for the date picker
         val c = Calendar.getInstance()
-        val pickYear = c.get(Calendar.YEAR)
-        val pickMonth = c.get(Calendar.MONTH)
-        val pickDay = c.get(Calendar.DAY_OF_MONTH)
+        pickYear = c.get(Calendar.YEAR)
+        pickMonth = c.get(Calendar.MONTH)
+        pickDay = c.get(Calendar.DAY_OF_MONTH)
 
         // Return a DatePickerDialog with the current date
         return DatePickerDialog(requireContext(), this, pickYear, pickMonth, pickDay)
