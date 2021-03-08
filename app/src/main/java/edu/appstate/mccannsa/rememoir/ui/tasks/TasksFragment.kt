@@ -15,6 +15,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import edu.appstate.mccannsa.rememoir.R
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -53,8 +54,6 @@ class TasksFragment : Fragment() {
                     val checked = document.data.get("checked") as Boolean
 
                     val card = CardView(requireContext())
-                    card.radius = 15f
-                    card.setPadding(25, 25, 25, 25)
 
                     val cardLayout = LinearLayout(requireContext())
                     cardLayout.orientation = LinearLayout.VERTICAL
@@ -70,7 +69,9 @@ class TasksFragment : Fragment() {
                     cardLayout.addView(checkBox)
 
                     val tv = TextView(requireContext())
-                    tv.text = taskDateTime.toDate().toString()
+                    tv.text = android.text.format.DateFormat.format(
+                            "MMMM d, h:mm a", taskDateTime.toDate())
+                    tv.setPadding(checkBox.compoundPaddingLeft, 0, 0, 0)
                     cardLayout.addView(tv)
 
                     card.addView(cardLayout)
