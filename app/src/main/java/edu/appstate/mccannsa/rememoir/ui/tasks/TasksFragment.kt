@@ -42,42 +42,49 @@ class TasksFragment : Fragment() {
 
         // pull tasks from db and populate view
         linearLayout = root.findViewById(R.id.taskLinearLayout)
+
+        val dateFormat = SimpleDateFormat("M-d-yyyy hh:mm a")
+        val c = Calendar.getInstance()
+        val dateText = "${c.get(Calendar.MONTH) + 1}-${c.get(Calendar.DAY_OF_MONTH)}-${c.get(Calendar.YEAR)} 12:00 AM"
+        val timestamp = Timestamp(dateFormat.parse(dateText)!!)
+
         db.collection("tasks")
-            .orderBy("dateTime")
-            .get()
-            .addOnSuccessListener { result ->
+                .orderBy("dateTime")
+                .startAt(timestamp)
+                .get()
+                .addOnSuccessListener { result ->
 
-                for (document in result) {
+                    for (document in result) {
 
-                    val name = document.data.get("name") as String
-                    val taskDateTime = document.data.get("dateTime") as Timestamp
-                    val checked = document.data.get("checked") as Boolean
+                        val name = document.data.get("name") as String
+                        val taskDateTime = document.data.get("dateTime") as Timestamp
+                        val checked = document.data.get("checked") as Boolean
 
-                    val card = CardView(requireContext())
+                        val card = CardView(requireContext())
 
-                    val cardLayout = LinearLayout(requireContext())
-                    cardLayout.orientation = LinearLayout.VERTICAL
+                        val cardLayout = LinearLayout(requireContext())
+                        cardLayout.orientation = LinearLayout.VERTICAL
 
-                    val checkBox = CheckBox(requireContext())
-                    checkBox.text = name
-                    checkBox.textSize = 20f
-                    checkBox.isChecked = checked
+                        val checkBox = CheckBox(requireContext())
+                        checkBox.text = name
+                        checkBox.textSize = 20f
+                        checkBox.isChecked = checked
 
-                    checkBox.setOnClickListener {
-                        document.reference.update("checked", checkBox.isChecked)
+                        checkBox.setOnClickListener {
+                            document.reference.update("checked", checkBox.isChecked)
+                        }
+                        cardLayout.addView(checkBox)
+
+                        val tv = TextView(requireContext())
+                        tv.text = android.text.format.DateFormat.format(
+                                "MMMM d, h:mm a", taskDateTime.toDate())
+                        tv.setPadding(checkBox.compoundPaddingLeft, 0, 0, 0)
+                        cardLayout.addView(tv)
+
+                        card.addView(cardLayout)
+                        linearLayout.addView(card)
                     }
-                    cardLayout.addView(checkBox)
-
-                    val tv = TextView(requireContext())
-                    tv.text = android.text.format.DateFormat.format(
-                            "MMMM d, h:mm a", taskDateTime.toDate())
-                    tv.setPadding(checkBox.compoundPaddingLeft, 0, 0, 0)
-                    cardLayout.addView(tv)
-
-                    card.addView(cardLayout)
-                    linearLayout.addView(card)
                 }
-            }
         return root
     }
 }
