@@ -30,7 +30,7 @@ class DatePickerFragment(tv: TextView) : DialogFragment(), DatePickerDialog.OnDa
         txtDate.text = buildDateString()
 
         // Return a DatePickerDialog with the current date
-        return DatePickerDialog(requireContext(), this, pickYear, pickMonth, pickDay)
+        return DatePickerDialog(requireContext(), this, pickYear, pickMonth - 1, pickDay)
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
