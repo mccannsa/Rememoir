@@ -42,40 +42,41 @@ class TasksFragment : Fragment() {
         // pull tasks from db and populate view
         linearLayout = root.findViewById(R.id.taskLinearLayout)
         db.collection("tasks")
-                .get()
-                .addOnSuccessListener { result ->
+            .orderBy("dateTime")
+            .get()
+            .addOnSuccessListener { result ->
 
-                    for (document in result) {
+                for (document in result) {
 
-                        val name = document.data.get("name") as String
-                        val taskDateTime = document.data.get("dateTime") as Timestamp
-                        val checked = document.data.get("checked") as Boolean
+                    val name = document.data.get("name") as String
+                    val taskDateTime = document.data.get("dateTime") as Timestamp
+                    val checked = document.data.get("checked") as Boolean
 
-                        val card = CardView(requireContext())
-                        card.radius = 15f
-                        card.setPadding(25, 25, 25, 25)
+                    val card = CardView(requireContext())
+                    card.radius = 15f
+                    card.setPadding(25, 25, 25, 25)
 
-                        val cardLayout = LinearLayout(requireContext())
-                        cardLayout.orientation = LinearLayout.VERTICAL
+                    val cardLayout = LinearLayout(requireContext())
+                    cardLayout.orientation = LinearLayout.VERTICAL
 
-                        val checkBox = CheckBox(requireContext())
-                        checkBox.text = name
-                        checkBox.textSize = 20f
-                        checkBox.isChecked = checked
+                    val checkBox = CheckBox(requireContext())
+                    checkBox.text = name
+                    checkBox.textSize = 20f
+                    checkBox.isChecked = checked
 
-                        checkBox.setOnClickListener {
-                            document.reference.update("checked", checkBox.isChecked)
-                        }
-                        cardLayout.addView(checkBox)
-
-                        val tv = TextView(requireContext())
-                        tv.text = taskDateTime.toDate().toString()
-                        cardLayout.addView(tv)
-
-                        card.addView(cardLayout)
-                        linearLayout.addView(card)
+                    checkBox.setOnClickListener {
+                        document.reference.update("checked", checkBox.isChecked)
                     }
+                    cardLayout.addView(checkBox)
+
+                    val tv = TextView(requireContext())
+                    tv.text = taskDateTime.toDate().toString()
+                    cardLayout.addView(tv)
+
+                    card.addView(cardLayout)
+                    linearLayout.addView(card)
                 }
+            }
         return root
     }
 }
