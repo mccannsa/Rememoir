@@ -1,7 +1,5 @@
 package edu.appstate.mccannsa.rememoir.ui.tasks
 
-import android.content.Intent
-import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,10 +10,10 @@ import androidx.cardview.widget.CardView
 import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.google.firebase.Timestamp
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import edu.appstate.mccannsa.rememoir.CreateTaskActivity
 import edu.appstate.mccannsa.rememoir.R
 import java.text.SimpleDateFormat
 import java.util.*
@@ -38,8 +36,7 @@ class TasksFragment : Fragment() {
 
         createTaskButton = root.findViewById(R.id.buttonCreateTask)
         createTaskButton.setOnClickListener {
-            val showCreateTask = Intent(activity, CreateTaskActivity::class.java)
-            startActivity(showCreateTask)
+            findNavController().navigate(R.id.action_navigation_tasks_to_createTaskFragment)
         }
 
         // pull tasks from db and populate view
@@ -59,7 +56,9 @@ class TasksFragment : Fragment() {
                         val card = CardView(requireContext())
                         card.radius = 15f
                         card.setPadding(25, 25, 25, 25)
-                        card.setCardBackgroundColor(Color.LTGRAY)
+
+                        val cardLayout = LinearLayout(requireContext())
+                        cardLayout.orientation = LinearLayout.VERTICAL
 
                         val checkBox = CheckBox(requireContext())
                         checkBox.text = name
@@ -69,13 +68,13 @@ class TasksFragment : Fragment() {
                         checkBox.setOnClickListener {
                             document.reference.update("checked", checkBox.isChecked)
                         }
+                        cardLayout.addView(checkBox)
 
                         val tv = TextView(requireContext())
                         tv.text = taskDateTime.toDate().toString()
-                        tv.setPadding(50)
+                        cardLayout.addView(tv)
 
-                        card.addView(checkBox)
-                        card.addView(tv)
+                        card.addView(cardLayout)
                         linearLayout.addView(card)
                     }
                 }
