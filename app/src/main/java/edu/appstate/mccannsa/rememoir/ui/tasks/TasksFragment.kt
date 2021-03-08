@@ -45,8 +45,6 @@ class TasksFragment : Fragment() {
                 .get()
                 .addOnSuccessListener { result ->
 
-                    val dateFormat = SimpleDateFormat("MMMMM dd h:mm a")
-
                     for (document in result) {
 
                         val name = document.data.get("name") as String

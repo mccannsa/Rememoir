@@ -43,12 +43,14 @@ class CreateTaskFragment : Fragment() {
         etTaskName = root.findViewById(R.id.etTaskName)!!
 
         tvDate = root.findViewById(R.id.tvDate)!!
-        tvDate.setOnClickListener { showDatePicker() }
         pickerDate = DatePickerFragment(tvDate)
+        tvDate.text = pickerDate.buildDateString()
+        tvDate.setOnClickListener { showDatePicker() }
 
         tvTime = root.findViewById(R.id.tvTime)!!
-        tvTime.setOnClickListener { showTimePicker() }
         pickerTime = TimePickerFragment(tvTime)
+        tvTime.text = pickerTime.buildTimeString()
+        tvTime.setOnClickListener { showTimePicker() }
 
         btnAddTask = root.findViewById(R.id.btnAddTask)!!
         btnAddTask.setOnClickListener { addTask() }
@@ -61,7 +63,7 @@ class CreateTaskFragment : Fragment() {
 
         val taskName = etTaskName.text.toString()
         val dateFormat = SimpleDateFormat("MM-dd-yyyy h:mm a")
-        val dateText = "${pickerDate.pickMonth}-${pickerDate.pickDay}-${pickerDate.pickYear} ${pickerTime.strTime}"
+        val dateText = "${pickerDate.pickMonth}-${pickerDate.pickDay}-${pickerDate.pickYear} ${pickerTime.buildTimeString()}"
         val taskDateTime = Timestamp(dateFormat.parse(dateText)!!)
 
         val task = hashMapOf(

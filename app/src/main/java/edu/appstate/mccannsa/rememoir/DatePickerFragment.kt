@@ -11,21 +11,23 @@ import java.util.*
 
 class DatePickerFragment(tv: TextView) : DialogFragment(), DatePickerDialog.OnDateSetListener {
 
-    var pickYear = Int.MIN_VALUE
+    private val c = Calendar.getInstance()
+    var pickYear = c.get(Calendar.YEAR)
         private set
-    var pickMonth = Int.MIN_VALUE
+    var pickMonth = c.get(Calendar.MONTH) + 1
         private set
-    var pickDay = Int.MIN_VALUE
+    var pickDay = c.get(Calendar.DAY_OF_MONTH)
         private set
     private val txtDate = tv
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
         // Get the current date as a default value for the date picker
-        val c = Calendar.getInstance()
         pickYear = c.get(Calendar.YEAR)
-        pickMonth = c.get(Calendar.MONTH)
+        pickMonth = c.get(Calendar.MONTH) + 1
         pickDay = c.get(Calendar.DAY_OF_MONTH)
+
+        txtDate.text = buildDateString()
 
         // Return a DatePickerDialog with the current date
         return DatePickerDialog(requireContext(), this, pickYear, pickMonth, pickDay)
@@ -37,7 +39,7 @@ class DatePickerFragment(tv: TextView) : DialogFragment(), DatePickerDialog.OnDa
         pickMonth = month + 1
         pickDay = dayOfMonth
 
-        txtDate.text = "${getMonthName(pickMonth)} ${pickDay}, ${pickYear}"
+        txtDate.text = buildDateString()
     }
 
     private fun getMonthName(month: Int): String {
@@ -57,5 +59,10 @@ class DatePickerFragment(tv: TextView) : DialogFragment(), DatePickerDialog.OnDa
             12 -> "December"
             else -> "INVALID"
         }
+    }
+
+    fun buildDateString(): String {
+
+        return "${getMonthName(pickMonth)} ${pickDay}, ${pickYear}"
     }
 }
