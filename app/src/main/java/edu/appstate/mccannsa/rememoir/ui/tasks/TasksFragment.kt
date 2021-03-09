@@ -40,19 +40,20 @@ class TasksFragment : Fragment() {
             findNavController().navigate(R.id.action_navigation_tasks_to_createTaskFragment)
         }
 
-        // pull tasks from db and populate view
-        linearLayout = root.findViewById(R.id.taskLinearLayout)
-
+        // Build a TimeStamp object with the current date to filter tasks
         val dateFormat = SimpleDateFormat("M-d-yyyy hh:mm a")
         val c = Calendar.getInstance()
         val dateText = "${c.get(Calendar.MONTH) + 1}-${c.get(Calendar.DAY_OF_MONTH)}-${c.get(Calendar.YEAR)} 12:00 AM"
         val timestamp = Timestamp(dateFormat.parse(dateText)!!)
 
+        // Pull tasks from Firestore db
         db.collection("tasks")
                 .orderBy("dateTime")
-                .startAt(timestamp)
+                .startAt(timestamp) // Get tasks from the current date and onward
                 .get()
                 .addOnSuccessListener { result ->
+
+                    linearLayout = root.findViewById(R.id.taskLinearLayout) // Displays task cards
 
                     for (document in result) {
 
@@ -60,6 +61,7 @@ class TasksFragment : Fragment() {
                         val taskDateTime = document.data.get("dateTime") as Timestamp
                         val checked = document.data.get("checked") as Boolean
 
+                        // Create card to display task info
                         val card = CardView(requireContext())
 
                         val cardLayout = LinearLayout(requireContext())
