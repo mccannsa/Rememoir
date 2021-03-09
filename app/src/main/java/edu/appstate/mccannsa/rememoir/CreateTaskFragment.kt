@@ -19,21 +19,21 @@ import edu.appstate.mccannsa.rememoir.ui.tasks.TasksFragment
 import java.text.SimpleDateFormat
 import java.util.*
 
-private lateinit var btnAddTask: Button
-private lateinit var etTaskName: EditText
-private lateinit var tvDate: TextView
-private lateinit var tvTime: TextView
-private lateinit var pickerDate: DatePickerFragment
-private lateinit var pickerTime: TimePickerFragment
-private val db = Firebase.firestore
-private val TAG = "CreateTaskFragment"
-
 /**
  * A simple [Fragment] subclass.
  * Use the [CreateTaskFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
 class CreateTaskFragment : Fragment() {
+
+    private lateinit var btnAddTask: Button
+    private lateinit var etTaskName: EditText
+    private lateinit var tvDate: TextView
+    private lateinit var tvTime: TextView
+    private lateinit var pickerDate: DatePickerFragment
+    private lateinit var pickerTime: TimePickerFragment
+    private val db = Firebase.firestore
+    private val TAG = "CreateTaskFragment"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
