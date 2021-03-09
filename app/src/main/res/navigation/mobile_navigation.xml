@@ -40,7 +40,7 @@
     <fragment
         android:id="@+id/createEntryFragment"
         android:name="edu.appstate.mccannsa.rememoir.CreateEntryFragment"
-        android:label="fragment_create_entry"
+        android:label="@string/title_create_entry"
         tools:layout="@layout/fragment_create_entry" >
         <action
             android:id="@+id/action_createEntryFragment_to_navigation_journal"
