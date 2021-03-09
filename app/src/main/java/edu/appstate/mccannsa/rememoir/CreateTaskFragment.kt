@@ -3,6 +3,7 @@ package edu.appstate.mccannsa.rememoir
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.Timestamp
@@ -62,6 +64,17 @@ class CreateTaskFragment : Fragment() {
     private fun addTask() {
 
         val taskName = etTaskName.text.toString()
+
+        if (taskName.isBlank()) {
+
+            val text = "Task name is blank!"
+            val duration = Toast.LENGTH_SHORT
+            val toast = Toast.makeText(requireContext(), text, duration)
+//            toast.setGravity(Gravity.BOTTOM or Gravity.LEFT, 0, 0)
+            toast.show()
+            return
+        }
+
         val dateFormat = SimpleDateFormat("MM-dd-yyyy h:mm a")
         val dateText = "${pickerDate.pickMonth}-${pickerDate.pickDay}-${pickerDate.pickYear} ${pickerTime.buildTimeString()}"
         val taskDateTime = Timestamp(dateFormat.parse(dateText)!!)
