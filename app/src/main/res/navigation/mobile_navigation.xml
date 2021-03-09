@@ -23,7 +23,11 @@
         android:id="@+id/navigation_journal"
         android:name="edu.appstate.mccannsa.rememoir.ui.journal.JournalFragment"
         android:label="@string/title_journal"
-        tools:layout="@layout/fragment_journal" />
+        tools:layout="@layout/fragment_journal" >
+        <action
+            android:id="@+id/action_navigation_journal_to_createEntryFragment"
+            app:destination="@id/createEntryFragment" />
+    </fragment>
     <fragment
         android:id="@+id/createTaskFragment"
         android:name="edu.appstate.mccannsa.rememoir.CreateTaskFragment"
@@ -32,5 +36,14 @@
         <action
             android:id="@+id/action_createTaskFragment_to_navigation_tasks2"
             app:destination="@id/navigation_tasks" />
+    </fragment>
+    <fragment
+        android:id="@+id/createEntryFragment"
+        android:name="edu.appstate.mccannsa.rememoir.CreateEntryFragment"
+        android:label="fragment_create_entry"
+        tools:layout="@layout/fragment_create_entry" >
+        <action
+            android:id="@+id/action_createEntryFragment_to_navigation_journal"
+            app:destination="@id/navigation_journal" />
     </fragment>
 </navigation>
