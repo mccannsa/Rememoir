@@ -35,10 +35,10 @@ class CreateEntryFragment : Fragment() {
         etTitle = root.findViewById(R.id.etEntryTitle)
         etBody = root.findViewById(R.id.etBody)
         etBody.setOnFocusChangeListener { v, hasFocus ->
-            if (!hasFocus) {
-                val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(v.windowToken, 0)
-            }
+//            if (v.id != R.id.etEntryTitle && !hasFocus) {
+//                val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+//                imm.hideSoftInputFromWindow(v.windowToken, 0)
+//            }
         }
 
         btnAddEntry = root.findViewById(R.id.btnAddEntry)!!
@@ -83,7 +83,7 @@ class CreateEntryFragment : Fragment() {
                 "date" to taskDateTime
         )
 
-        db.collection("tasks")
+        db.collection("journals")
                 .add(entry)
                 .addOnSuccessListener { documentReference ->
                     Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
