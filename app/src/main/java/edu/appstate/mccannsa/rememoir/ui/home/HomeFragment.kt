@@ -6,13 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.firebase.Timestamp
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import edu.appstate.mccannsa.rememoir.R
@@ -49,7 +48,7 @@ class HomeFragment : Fragment() {
                 .get()
                 .addOnSuccessListener { result ->
 
-                    val linearLayout = root.findViewById(R.id.lytHomeTasks) as LinearLayout // Displays task cards
+                    val lytTasks = root.findViewById(R.id.lytHomeTasks) as LinearLayout // Displays task cards
 
                     for (document in result) {
 
@@ -80,7 +79,31 @@ class HomeFragment : Fragment() {
                         cardLayout.addView(tv)
 
                         card.addView(cardLayout)
-                        linearLayout.addView(card)
+                        lytTasks.addView(card)
+                    }
+                }
+
+        // Pull journal entries from Firestore db
+        db.collection("journals")
+                .whereEqualTo("date", currTimestamp)
+                .get()
+                .addOnSuccessListener { result ->
+
+                    val lytJournal = root.findViewById(R.id.lytHomeJournal) as LinearLayout
+
+                    for (document in result) {
+
+                        val title = document.data.get("title") as String
+                        val mood = document.data.get("mood") as Number
+                        val body = document.data.get("body") as String
+
+                        val tvTitle = TextView(requireContext())
+                        tvTitle.text = "${title} ${mood}"
+                        lytJournal.addView(tvTitle)
+
+                        val tvBody = TextView(requireContext())
+                        tvBody.text = body
+                        lytJournal.addView(tvBody)
                     }
                 }
 
