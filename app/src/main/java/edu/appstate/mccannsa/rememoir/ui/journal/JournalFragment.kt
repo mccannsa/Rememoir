@@ -39,13 +39,13 @@ class JournalFragment : Fragment() {
             findNavController().navigate(R.id.action_navigation_journal_to_createEntryFragment)
         }
 
-        // Pull tasks from Firestore db
+        // Pull journal entries from Firestore db
         db.collection("journals")
                 .orderBy("date", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener { result ->
 
-                    linearLayout = root.findViewById(R.id.lytJournalList) // Displays task cards
+                    linearLayout = root.findViewById(R.id.lytJournalList) // Displays entry cards
 
                     for (document in result) {
 
@@ -53,7 +53,7 @@ class JournalFragment : Fragment() {
                         val date = document.data.get("date") as Timestamp
                         val mood = document.data.get("mood") as Number
 
-                        // Create card to display task info
+                        // Create card to display entry info
                         val card = CardView(requireContext())
 
                         val cardLayout = LinearLayout(requireContext())
