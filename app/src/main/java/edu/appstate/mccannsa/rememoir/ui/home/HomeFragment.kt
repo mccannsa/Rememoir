@@ -94,7 +94,7 @@ class HomeFragment : Fragment() {
                     for (document in result) {
 
                         val title = document.data.get("title") as String
-                        val mood = document.data.get("mood") as Number
+                        val mood = document.data.get("mood") as String
                         val body = document.data.get("body") as String
 
                         val tvTitle = TextView(requireContext())

@@ -27,6 +27,9 @@
         <action
             android:id="@+id/action_navigation_journal_to_createEntryFragment"
             app:destination="@id/createEntryFragment" />
+        <action
+            android:id="@+id/action_navigation_journal_to_entryFragment"
+            app:destination="@id/entryFragment" />
     </fragment>
     <fragment
         android:id="@+id/createTaskFragment"
@@ -45,5 +48,25 @@
         <action
             android:id="@+id/action_createEntryFragment_to_navigation_journal"
             app:destination="@id/navigation_journal" />
+    </fragment>
+    <fragment
+        android:id="@+id/entryFragment"
+        android:name="edu.appstate.mccannsa.rememoir.EntryFragment"
+        android:label="@string/title_entry"
+        tools:layout="@layout/fragment_entry">
+        <action
+            android:id="@+id/action_entryFragment_to_navigation_journal"
+            app:destination="@id/navigation_journal" />
+        <argument
+            android:name="title"
+            app:argType="string" />
+        <argument
+            android:name="mood"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="body"
+            app:argType="string" />
+        <argument android:name="date" />
     </fragment>
 </navigation>
