@@ -4,4 +4,12 @@
     <string name="title_tasks">Tasks</string>
     <string name="title_journal">Journal</string>
     <string name="title_create_task">Create Task</string>
+    <string name="title_create_entry">Create Journal Entry</string>
+    <string-array name="mood_array">
+        <item>Happy</item>
+        <item>Sad</item>
+        <item>Angry</item>
+        <item>OK</item>
+    </string-array>
+    <string name="title_entry">View Entry</string>
 </resources>
