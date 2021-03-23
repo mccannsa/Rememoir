@@ -51,7 +51,7 @@ class JournalFragment : Fragment() {
 
                         val title = document.data.get("title") as String
                         val date = document.data.get("date") as Timestamp
-                        val mood = document.data.get("mood") as Number
+                        val mood = document.data.get("mood") as String
 
                         // Create card to display entry info
                         val card = CardView(requireContext())

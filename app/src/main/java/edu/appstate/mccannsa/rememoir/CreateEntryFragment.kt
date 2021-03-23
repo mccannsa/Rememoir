@@ -1,14 +1,11 @@
 package edu.appstate.mccannsa.rememoir
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
 import android.widget.*
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.Timestamp
@@ -32,6 +29,17 @@ class CreateEntryFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_create_entry, container, false)
 
         spMood = root.findViewById(R.id.spMood)
+        ArrayAdapter.createFromResource(
+                requireActivity(),
+                R.array.mood_array,
+                android.R.layout.simple_spinner_item
+        ).also { adapter ->
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            // Apply the adapter to the spinner
+            spMood.adapter = adapter
+        }
+
         etTitle = root.findViewById(R.id.etEntryTitle)
         etBody = root.findViewById(R.id.etBody)
         etBody.setOnFocusChangeListener { v, hasFocus ->
@@ -61,6 +69,8 @@ class CreateEntryFragment : Fragment() {
             return
         }
 
+        val mood = spMood.selectedItem.toString()
+
         val body = etBody.text.toString()
 
         if (body.isBlank()) {
@@ -74,13 +84,16 @@ class CreateEntryFragment : Fragment() {
         val c = Calendar.getInstance()
         val dateFormat = SimpleDateFormat("M-d-yyyy h:mm a")
         val dateText = "${c.get(Calendar.MONTH) + 1}-${c.get(Calendar.DAY_OF_MONTH)}-${c.get(Calendar.YEAR)} 12:00 AM"
-        val taskDateTime = Timestamp(dateFormat.parse(dateText)!!)
+        val journalDate = Timestamp(dateFormat.parse(dateText)!!)
+
+        // check if a journal entry already exists for today
+//        val result = db
 
         val entry = hashMapOf(
                 "title" to title,
-                "mood" to 0,
+                "mood" to mood,
                 "body" to body,
-                "date" to taskDateTime
+                "date" to journalDate
         )
 
         db.collection("journals")
