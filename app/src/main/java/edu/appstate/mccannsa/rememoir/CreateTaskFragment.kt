@@ -1,5 +1,9 @@
 package edu.appstate.mccannsa.rememoir
 
+import android.app.AlarmManager
+import android.app.Notification
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +16,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.Timestamp
@@ -27,6 +33,8 @@ import java.util.*
  * create an instance of this fragment.
  */
 class CreateTaskFragment : Fragment() {
+
+    val CHANNEL_ID = "rememoir_channel"
 
     private lateinit var btnAddTask: Button
     private lateinit var etTaskName: EditText
@@ -94,7 +102,24 @@ class CreateTaskFragment : Fragment() {
                 Log.w(TAG, "Error adding document", e)
             }
 
-         findNavController().navigate(R.id.action_createTaskFragment_to_navigation_tasks2)
+        val intent = Intent(requireContext(), MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(requireContext(), 0, intent, 0)
+
+        var builder = NotificationCompat.Builder(requireContext(), CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_notifications_black_24dp)
+                .setContentTitle("Reminder!")
+                .setContentText("placeholder")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+
+        with(NotificationManagerCompat.from(requireContext())) {
+            notify(1001, builder.build())
+        }
+
+        findNavController().navigate(R.id.action_createTaskFragment_to_navigation_tasks2)
     }
 
     private fun showDatePicker() {
@@ -103,5 +128,39 @@ class CreateTaskFragment : Fragment() {
 
     private fun showTimePicker() {
         pickerTime.show(childFragmentManager, "timePicker")
+    }
+
+    private fun scheduleNotification(notif: Notification, delay: Long) {
+
+        val notifIntent: Intent = Intent(requireContext(), ReminderReceiver::class.java)
+        notifIntent.putExtra(ReminderReceiver.NOTIFICATION, notif)
+
+        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(
+                requireContext(),
+                0,
+                notifIntent,
+                0
+        )
+
+        val alarmManager: AlarmManager = activity?.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, delay, pendingIntent)
+    }
+
+    private fun getNotification(content: String): Notification {
+
+        val builder: NotificationCompat.Builder = NotificationCompat.Builder(requireContext(), MainActivity.CHANNEL_ID)
+        builder.setContentTitle("Reminder!")
+        builder.setContentText(content)
+        builder.setSmallIcon(R.drawable.ic_notifications_black_24dp)
+        builder.setAutoCancel(true)
+        builder.setChannelId(MainActivity.CHANNEL_ID)
+        return builder.build()
+    }
+
+    private fun createNotification(name: String, taskTimestamp: Timestamp) {
+
+        val dateTime = taskTimestamp.toDate()
+//        scheduleNotification(getNotification(name), dateTime.time)
+        NotificationManagerCompat.from(requireContext()).notify(ReminderReceiver.NOTIFICATION_ID, getNotification(name))
     }
 }
