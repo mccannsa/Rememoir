@@ -1,6 +1,11 @@
 package edu.appstate.mccannsa.rememoir
 
+import android.app.AlarmManager
+import android.app.Notification
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -12,6 +17,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.findNavController
 import com.google.firebase.Timestamp
@@ -27,6 +35,8 @@ import java.util.*
  * create an instance of this fragment.
  */
 class CreateTaskFragment : Fragment() {
+
+    val CHANNEL_ID = "rememoir_channel"
 
     private lateinit var btnAddTask: Button
     private lateinit var etTaskName: EditText
@@ -94,7 +104,9 @@ class CreateTaskFragment : Fragment() {
                 Log.w(TAG, "Error adding document", e)
             }
 
-         findNavController().navigate(R.id.action_createTaskFragment_to_navigation_tasks2)
+        scheduleNotification(taskDateTime.toDate().time, taskName)
+
+        findNavController().navigate(R.id.action_createTaskFragment_to_navigation_tasks2)
     }
 
     private fun showDatePicker() {
@@ -103,5 +115,15 @@ class CreateTaskFragment : Fragment() {
 
     private fun showTimePicker() {
         pickerTime.show(childFragmentManager, "timePicker")
+    }
+
+    private fun scheduleNotification(time: Long, content: String) {
+        val intent = Intent(requireContext(), ReminderReceiver::class.java)
+        intent.putExtra("content", content)
+        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(requireContext(), Calendar.getInstance().timeInMillis.toInt(),
+                intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val alarm: AlarmManager =
+                requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent)
     }
 }
