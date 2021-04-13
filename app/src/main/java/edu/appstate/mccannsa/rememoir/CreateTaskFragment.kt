@@ -120,7 +120,7 @@ class CreateTaskFragment : Fragment() {
     private fun scheduleNotification(time: Long, content: String) {
         val intent = Intent(requireContext(), ReminderReceiver::class.java)
         intent.putExtra("content", content)
-        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(requireContext(), 1001,
+        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(requireContext(), Calendar.getInstance().timeInMillis.toInt(),
                 intent, PendingIntent.FLAG_UPDATE_CURRENT)
         val alarm: AlarmManager =
                 requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager

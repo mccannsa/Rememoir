@@ -17,6 +17,7 @@ class ReminderReceiver : BroadcastReceiver() {
 
     companion object {
         const val channelID: String = "rememoir_channel"
+        var notifID: Int = Int.MIN_VALUE
     }
 
     override fun onReceive(context: Context?, intent: Intent?) {
@@ -36,25 +37,15 @@ class ReminderReceiver : BroadcastReceiver() {
                 .setAutoCancel(true)
                 .build()
 
-//        val prefs = context.getSharedPreferences("rememoir_prefs", MODE_PRIVATE)
-//        val id = prefs.getInt("notif_counter", 0)
-//        prefs.edit()
-//                .putInt("notif_counter", id + 1)
-//                .apply()
+
+        val prefs = context.getSharedPreferences("rememoir_prefs", Context.MODE_PRIVATE)
+        notifID = prefs.getInt("notif_counter", 0)
+        prefs.edit()
+                .putInt("notif_counter", notifID + 1)
+                .apply()
 
         with(NotificationManagerCompat.from(context)) {
-            notify(1001, notif)
-        }
-    }
-
-    private class NotificationID {
-
-        companion object {
-
-            private val counter: AtomicInteger = AtomicInteger(0)
-            fun getID(): Int {
-                return counter.incrementAndGet()
-            }
+            notify(notifID, notif)
         }
     }
 }
