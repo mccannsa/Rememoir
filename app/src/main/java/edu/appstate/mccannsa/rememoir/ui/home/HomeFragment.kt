@@ -14,6 +14,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import edu.appstate.mccannsa.rememoir.DataRepository
 import edu.appstate.mccannsa.rememoir.R
 import java.text.SimpleDateFormat
 import java.util.*
@@ -83,30 +84,40 @@ class HomeFragment : Fragment() {
                     }
                 }
 
-        // Pull journal entries from Firestore db
-        db.collection("journals")
-                .whereEqualTo("date", currTimestamp)
-                .get()
-                .addOnSuccessListener { result ->
+        if (DataRepository.getInstance().entryList.filter { e -> e.date != currTimestamp.toDate() }.isEmpty()) {
+            val lytJournal = root.findViewById(R.id.lytHomeJournal) as LinearLayout
+            val tvTitle = TextView(requireContext())
+            tvTitle.text = "Be sure to add an entry to your journal today!"
+            tvTitle.textSize = 16f
+            lytJournal.addView(tvTitle)
 
-                    val lytJournal = root.findViewById(R.id.lytHomeJournal) as LinearLayout
+        } else {
+            // Pull journal entries from Firestore db
+            db.collection("journals")
+                    .whereEqualTo("date", currTimestamp)
+                    .get()
+                    .addOnSuccessListener { result ->
 
-                    for (document in result) {
+                        val lytJournal = root.findViewById(R.id.lytHomeJournal) as LinearLayout
 
-                        val title = document.data.get("title") as String
-                        val mood = document.data.get("mood") as String
-                        val body = document.data.get("body") as String
+                        for (document in result) {
 
-                        val tvTitle = TextView(requireContext())
-                        tvTitle.text = "${title} ${mood}"
-                        lytJournal.addView(tvTitle)
+                            val title = document.data.get("title") as String
+                            val mood = document.data.get("mood") as String
+                            val body = document.data.get("body") as String
 
-                        val tvBody = TextView(requireContext())
-                        tvBody.text = body
-                        lytJournal.addView(tvBody)
+                            val tvTitle = TextView(requireContext())
+                            tvTitle.text = "${title}"
+                            tvTitle.textSize = 20f
+                            lytJournal.addView(tvTitle)
+
+                            val tvBody = TextView(requireContext())
+                            tvBody.text = body
+                            tvBody.textSize = 16f
+                            lytJournal.addView(tvBody)
+                        }
                     }
-                }
-
+        }
         return root
     }
 }

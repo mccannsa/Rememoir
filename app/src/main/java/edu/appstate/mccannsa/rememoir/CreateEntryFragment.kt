@@ -87,23 +87,22 @@ class CreateEntryFragment : Fragment() {
         val journalDate = Timestamp(dateFormat.parse(dateText)!!)
 
         // check if a journal entry already exists for today
-//        val result = db
+        var exists = false
+        for (entry in DataRepository.getInstance().entryList) {
+            if (entry.date == journalDate.toDate()) {
+                exists = true
+                break
+            }
+        }
 
-        val entry = hashMapOf(
-                "title" to title,
-                "mood" to mood,
-                "body" to body,
-                "date" to journalDate
-        )
-
-        db.collection("journals")
-                .add(entry)
-                .addOnSuccessListener { documentReference ->
-                    Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-                }
-                .addOnFailureListener { e ->
-                    Log.w(TAG, "Error adding document", e)
-                }
+        if (!exists) {
+            DataRepository.getInstance().addEntry(title, body, journalDate.toDate(), mood)
+        } else {
+            val text = "Entry already exists for today!"
+            val duration = Toast.LENGTH_SHORT
+            val toast = Toast.makeText(requireContext(), text, duration)
+            toast.show()
+        }
 
         findNavController().navigate(R.id.action_createEntryFragment_to_navigation_journal)
     }

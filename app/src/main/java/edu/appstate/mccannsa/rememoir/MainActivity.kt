@@ -20,9 +20,9 @@ class MainActivity : AppCompatActivity() {
         val CHANNEL_ID = "rememoir_channel"
     }
 
-    val db = Firebase.firestore
-
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        DataRepository.getInstance().load()
 
         createNotificationChannel()
         super.onCreate(savedInstanceState)
