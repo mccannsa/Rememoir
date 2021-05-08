@@ -1,5 +1,6 @@
 package edu.appstate.mccannsa.rememoir.ui.journal
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,9 +17,7 @@ import com.google.firebase.Timestamp
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import edu.appstate.mccannsa.rememoir.EntryFragmentArgs
-import edu.appstate.mccannsa.rememoir.EntryFragmentDirections
-import edu.appstate.mccannsa.rememoir.R
+import edu.appstate.mccannsa.rememoir.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -42,42 +41,43 @@ class JournalFragment : Fragment() {
             findNavController().navigate(R.id.action_navigation_journal_to_createEntryFragment)
         }
 
-        // Pull journal entries from Firestore db
-        db.collection("journals")
-                .orderBy("date", Query.Direction.DESCENDING)
-                .get()
-                .addOnSuccessListener { result ->
+        var entries = DataRepository.getInstance().entryList
+        entries.sortByDescending { it.date }
 
-                    linearLayout = root.findViewById(R.id.lytJournalList) // Displays entry cards
+        linearLayout = root.findViewById(R.id.lytJournalList) // Displays entry cards
 
-                    for (document in result) {
+        for (entry in entries) {
 
-                        val title = document.data.get("title") as String
-                        val date = document.data.get("date") as Timestamp
-                        val mood = document.data.get("mood") as String
-                        val body = document.data.get("body") as String
+            val title = entry.title
+            val date = entry.date
+            val mood = entry.mood
+            val body = entry.body
 
-                        // Create card to display entry info
-                        val card = CardView(requireContext())
+            // Create card to display entry info
+            val card = CardView(requireContext())
 
-                        val cardLayout = LinearLayout(requireContext())
-                        cardLayout.orientation = LinearLayout.VERTICAL
+            val cardLayout = LinearLayout(requireContext())
+            cardLayout.orientation = LinearLayout.VERTICAL
 
-                        val tvTitle = TextView(requireContext())
-                        tvTitle.text = "${title} ${mood}"
-                        cardLayout.addView(tvTitle)
+            val tvTitle = TextView(requireContext())
+            tvTitle.text = "${title} - ${mood}"
+            tvTitle.textSize = 24f
+            tvTitle.setTextColor(Color.BLACK)
+            tvTitle.setPadding(15, 0, 0, 0)
+            cardLayout.addView(tvTitle)
 
-                        val tvDate = TextView(requireContext())
-                        val dateStr = android.text.format.DateFormat.format(
-                            "MMMM d, yyyy", date.toDate()).toString()
-                        tvDate.text = dateStr
-                        cardLayout.addView(tvDate)
+            val tvDate = TextView(requireContext())
+            val dateStr = android.text.format.DateFormat.format(
+                "MMMM d, yyyy", date).toString()
+            tvDate.text = dateStr
+            tvDate.textSize = 16f
+            tvDate.setPadding(15, 0, 0, 10)
+            cardLayout.addView(tvDate)
 
-                        card.addView(cardLayout)
-                        card.setOnClickListener { showEntry(title, mood, body, dateStr) }
-                        linearLayout.addView(card)
-                    }
-                }
+            card.addView(cardLayout)
+            card.setOnClickListener { showEntry(title, mood, body, dateStr) }
+            linearLayout.addView(card)
+        }
         return root
     }
 

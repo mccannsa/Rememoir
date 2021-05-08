@@ -43,6 +43,9 @@ class TimePickerFragment(tv: TextView) : DialogFragment(), TimePickerDialog.OnTi
         if (pickHour > 12) {
             pickPeriod = Calendar.PM
             str += "${pickHour - 12}:"
+        } else if (pickHour == 12) {
+            pickPeriod = Calendar.PM
+            str += "${pickHour}:"
         } else {
             str += "${pickHour}:"
         }

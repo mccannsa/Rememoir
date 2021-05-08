@@ -36,16 +36,12 @@ import java.util.*
  */
 class CreateTaskFragment : Fragment() {
 
-    val CHANNEL_ID = "rememoir_channel"
-
     private lateinit var btnAddTask: Button
     private lateinit var etTaskName: EditText
     private lateinit var tvDate: TextView
     private lateinit var tvTime: TextView
     private lateinit var pickerDate: DatePickerFragment
     private lateinit var pickerTime: TimePickerFragment
-    private val db = Firebase.firestore
-    private val TAG = "CreateTaskFragment"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -89,20 +85,7 @@ class CreateTaskFragment : Fragment() {
         val dateText = "${pickerDate.pickMonth}-${pickerDate.pickDay}-${pickerDate.pickYear} ${pickerTime.buildTimeString()}"
         val taskDateTime = Timestamp(dateFormat.parse(dateText)!!)
 
-        val task = hashMapOf(
-            "name" to taskName,
-            "dateTime" to taskDateTime,
-            "checked" to false
-        )
-
-        db.collection("tasks")
-            .add(task)
-            .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Error adding document", e)
-            }
+        DataRepository.getInstance().addTask(taskName, taskDateTime, false)
 
         scheduleNotification(taskDateTime.toDate().time, taskName)
 
@@ -120,8 +103,8 @@ class CreateTaskFragment : Fragment() {
     private fun scheduleNotification(time: Long, content: String) {
         val intent = Intent(requireContext(), ReminderReceiver::class.java)
         intent.putExtra("content", content)
-        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(requireContext(), Calendar.getInstance().timeInMillis.toInt(),
-                intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent: PendingIntent = PendingIntent.getBroadcast(requireContext(),
+            Calendar.getInstance().timeInMillis.toInt(), intent, PendingIntent.FLAG_UPDATE_CURRENT)
         val alarm: AlarmManager =
                 requireActivity().getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarm.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent)
