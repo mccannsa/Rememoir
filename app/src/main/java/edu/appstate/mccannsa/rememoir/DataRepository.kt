@@ -6,7 +6,10 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.util.*
 
-
+/**
+ * DateRepository - Stores tasks and journal entries and updates Firestore.
+ *                  Uses Singleton design to ensure only one local repository.
+ */
 class DataRepository {
 
     private val db = Firebase.firestore
@@ -26,6 +29,19 @@ class DataRepository {
         }
     }
 
+    /**
+     * addEntry - Adds a journal entry to both entryList and Firestore.
+     *
+     *            Uses the parameters to first add an entry to Firestore.
+     *            Then it creates an Entry object with the document ID
+     *            of the entry just added to Firestore and adds it to
+     *            entryList.
+     *
+     * @param title The title of the entry
+     * @param body The body of the entry
+     * @param date The date of the entry
+     * @param mood The mood of the entry
+     */
     fun addEntry(title: String, body: String, date: Date, mood: String) {
 
         val e = hashMapOf(
@@ -44,6 +60,18 @@ class DataRepository {
             }
     }
 
+    /**
+     * addTask - Adds a task to both taskList and Firestore.
+     *
+     *           Uses the parameters to first add a task to Firestore.
+     *           Then it creates a Task object with the document ID
+     *           of the task just added to Firestore and adds it to
+     *           taskList.
+     *
+     * @param name The task name
+     * @param timestamp The date and time of the task
+     * @param checked Whether or not the task is checked
+     */
     fun addTask(name: String, timestamp: Timestamp, checked: Boolean) {
 
         val t = hashMapOf(
@@ -62,6 +90,13 @@ class DataRepository {
             }
     }
 
+    /**
+     * load - Retrieves tasks and journal entries from Firestore to store
+     *        in DataRepository.
+     *
+     *        Task and journal documents are converted into Task and Entry
+     *        objects and added to taskList and entryList, respectively.
+     */
     fun load() {
 
         // get tasks from db
@@ -101,6 +136,12 @@ class DataRepository {
             }
     }
 
+    /**
+     * updateTask - Updates a task in Firestore. Currently only
+     *              updates the checked status of a task.
+     *
+     * @param task The task being updated
+     */
     fun updateTask(task: Task) {
         Log.d("updateTask", "trying to update")
         db.collection("tasks").document(task.id).update("checked", task.checked)
